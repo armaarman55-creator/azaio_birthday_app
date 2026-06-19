@@ -131,7 +131,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                           child: Container(
                             width: 44, height: 44,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: const Center(
@@ -150,7 +150,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                           child: Container(
                             width: 44, height: 44,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: const Center(
@@ -181,7 +181,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.3),
+                        color: Colors.white.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Column(
@@ -263,21 +263,21 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
           color: isMatched
-              ? Colors.green.withOpacity(0.5)
+              ? Colors.green.withValues(alpha: 0.5)
               : isFlipped
-                  ? Colors.white.withOpacity(0.4)
-                  : Colors.white.withOpacity(0.2),
+                  ? Colors.white.withValues(alpha: 0.4)
+                  : Colors.white.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isMatched
                 ? Colors.greenAccent
                 : isFlipped
                     ? Colors.white
-                    : Colors.white.withOpacity(0.3),
+                    : Colors.white.withValues(alpha: 0.3),
             width: isFlipped ? 2.5 : 1.5,
           ),
           boxShadow: isMatched
-              ? [BoxShadow(color: Colors.greenAccent.withOpacity(0.4), blurRadius: 12)]
+              ? [BoxShadow(color: Colors.greenAccent.withValues(alpha: 0.4), blurRadius: 12)]
               : [],
         ),
         child: Center(
@@ -290,7 +290,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                     key: ValueKey('closed_$i'),
                     style: TextStyle(
                       fontSize: 30,
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                     ),
                   ),
           ),
@@ -303,7 +303,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(

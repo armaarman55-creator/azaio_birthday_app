@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'dart:math';
 
 /// Sticker Book — tap stickers to collect them! All Azaio's fave characters.
 class StickerBookScreen extends StatefulWidget {
@@ -95,7 +94,7 @@ class _StickerBookScreenState extends State<StickerBookScreen> {
                       child: Container(
                         width: 44, height: 44,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: const Center(
@@ -131,7 +130,7 @@ class _StickerBookScreenState extends State<StickerBookScreen> {
                       borderRadius: BorderRadius.circular(10),
                       child: LinearProgressIndicator(
                         value: _unlockedCount / _allStickers.length,
-                        backgroundColor: Colors.white.withOpacity(0.2),
+                        backgroundColor: Colors.white.withValues(alpha: 0.2),
                         valueColor: AlwaysStoppedAnimation<Color>(
                           widget.theme['accent'] as Color,
                         ),
@@ -186,16 +185,16 @@ class _StickerBookScreenState extends State<StickerBookScreen> {
                         duration: const Duration(milliseconds: 300),
                         decoration: BoxDecoration(
                           color: unlocked
-                              ? Colors.white.withOpacity(0.35)
-                              : Colors.black.withOpacity(0.25),
+                              ? Colors.white.withValues(alpha: 0.35)
+                              : Colors.black.withValues(alpha: 0.25),
                           borderRadius: BorderRadius.circular(18),
                           border: Border.all(
-                            color: unlocked ? Colors.white : Colors.white.withOpacity(0.2),
+                            color: unlocked ? Colors.white : Colors.white.withValues(alpha: 0.2),
                             width: unlocked ? 2.5 : 1,
                           ),
                           boxShadow: unlocked
                               ? [BoxShadow(
-                                  color: (widget.theme['accent'] as Color).withOpacity(0.3),
+                                  color: (widget.theme['accent'] as Color).withValues(alpha: 0.3),
                                   blurRadius: 12,
                                 )]
                               : [],
@@ -215,7 +214,7 @@ class _StickerBookScreenState extends State<StickerBookScreen> {
                               style: TextStyle(
                                 fontSize: 9,
                                 fontWeight: FontWeight.w700,
-                                color: Colors.white.withOpacity(unlocked ? 0.9 : 0.4),
+                                color: Colors.white.withValues(alpha: unlocked ? 0.9 : 0.4),
                               ),
                             ),
                           ],
@@ -243,7 +242,7 @@ class _StickerBookScreenState extends State<StickerBookScreen> {
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? Colors.white.withOpacity(0.4) : Colors.white.withOpacity(0.15),
+          color: isActive ? Colors.white.withValues(alpha: 0.4) : Colors.white.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isActive ? Colors.white : Colors.transparent,
@@ -255,7 +254,7 @@ class _StickerBookScreenState extends State<StickerBookScreen> {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w800,
-            color: Colors.white.withOpacity(isActive ? 1 : 0.7),
+            color: Colors.white.withValues(alpha: isActive ? 1 : 0.7),
           ),
         ),
       ),

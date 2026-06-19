@@ -26,10 +26,10 @@ class GlassCard extends StatelessWidget {
     return Container(
       padding: padding ?? const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(opacity),
+        color: Colors.white.withValues(alpha: opacity),
         borderRadius: BorderRadius.circular(radius),
         border: hasBorder
-            ? Border.all(color: Colors.white.withOpacity(0.4), width: 1.5)
+            ? Border.all(color: Colors.white.withValues(alpha: 0.4), width: 1.5)
             : null,
       ),
       child: child,
@@ -50,7 +50,7 @@ class BackBtn extends StatelessWidget {
         width: 46,
         height: 46,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.3),
+          color: Colors.white.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(15),
         ),
         child: const Center(
@@ -205,8 +205,8 @@ class ShowBadge extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
           color: isActive
-              ? Colors.white.withOpacity(0.4)
-              : Colors.white.withOpacity(0.15),
+              ? Colors.white.withValues(alpha: 0.4)
+              : Colors.white.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isActive ? Colors.white : Colors.transparent,
@@ -223,7 +223,7 @@ class ShowBadge extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w800,
-                color: Colors.white.withOpacity(isActive ? 1 : 0.7),
+                color: Colors.white.withValues(alpha: isActive ? 1 : 0.7),
               ),
             ),
           ],

@@ -17,9 +17,9 @@ class AppTheme {
   // ── Card decoration helper ─────────────────────────────────────────────────
   static BoxDecoration glassCard({double opacity = 0.2, double radius = 20}) =>
       BoxDecoration(
-        color: Colors.white.withOpacity(opacity),
+        color: Colors.white.withValues(alpha: opacity),
         borderRadius: BorderRadius.circular(radius),
-        border: Border.all(color: Colors.white.withOpacity(0.35), width: 1.5),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.35), width: 1.5),
       );
 
   // ── Text styles ────────────────────────────────────────────────────────────

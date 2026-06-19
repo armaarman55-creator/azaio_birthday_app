@@ -88,7 +88,7 @@ class _WishScreenState extends State<WishScreen> with TickerProviderStateMixin {
                           child: Container(
                             width: 44, height: 44,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.15),
+                              color: Colors.white.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: const Center(
@@ -132,16 +132,16 @@ class _WishScreenState extends State<WishScreen> with TickerProviderStateMixin {
                             const SizedBox(height: 20),
                             Container(
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.15),
+                                color: Colors.white.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.white.withOpacity(0.3)),
+                                border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
                               ),
                               child: TextField(
                                 controller: _wishController,
                                 style: const TextStyle(color: Colors.white, fontSize: 16),
                                 decoration: InputDecoration(
                                   hintText: 'I wish for... (optional)',
-                                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
+                                  hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
                                   border: InputBorder.none,
                                   contentPadding: const EdgeInsets.all(18),
                                   prefixIcon: const Text('💭', style: TextStyle(fontSize: 22)),
@@ -172,7 +172,7 @@ class _WishScreenState extends State<WishScreen> with TickerProviderStateMixin {
                                   borderRadius: BorderRadius.circular(24),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: (widget.theme['accent'] as Color).withOpacity(0.5),
+                                      color: (widget.theme['accent'] as Color).withValues(alpha: 0.5),
                                       blurRadius: 20,
                                       offset: const Offset(0, 6),
                                     ),
@@ -199,9 +199,9 @@ class _WishScreenState extends State<WishScreen> with TickerProviderStateMixin {
                             Container(
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.15),
+                                color: Colors.white.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(24),
-                                border: Border.all(color: Colors.white.withOpacity(0.4), width: 2),
+                                border: Border.all(color: Colors.white.withValues(alpha: 0.4), width: 2),
                               ),
                               child: Column(
                                 children: [
@@ -220,7 +220,7 @@ class _WishScreenState extends State<WishScreen> with TickerProviderStateMixin {
                                   Container(
                                     padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.1),
+                                      color: Colors.white.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(16),
                                     ),
                                     child: Text(
@@ -260,9 +260,9 @@ class _WishScreenState extends State<WishScreen> with TickerProviderStateMixin {
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.white.withOpacity(0.5)),
+                                  border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
                                 ),
                                 child: const Text(
                                   '🕯️ Make Another Wish',
@@ -333,7 +333,7 @@ class _WishScreenState extends State<WishScreen> with TickerProviderStateMixin {
                 ),
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: _candleLit
-                    ? [BoxShadow(color: const Color(0xFFfde68a).withOpacity(0.7), blurRadius: 20, spreadRadius: 5)]
+                    ? [BoxShadow(color: const Color(0xFFfde68a).withValues(alpha: 0.7), blurRadius: 20, spreadRadius: 5)]
                     : [],
               ),
               child: Column(
@@ -346,7 +346,7 @@ class _WishScreenState extends State<WishScreen> with TickerProviderStateMixin {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w900,
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                     ),
                   ),
                 ],
