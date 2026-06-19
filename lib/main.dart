@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:math';
+import 'dart:io';
 import 'package:confetti/confetti.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'wish_screen.dart';
 import 'memory_game.dart';
 import 'sticker_book.dart';
 import 'sing_along.dart';
+import 'settings_screen.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 void main() {
@@ -144,6 +147,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Duration _timeLeft = const Duration();
   int _activeTheme = 0; // 0=bluey, 1=peppa, 2=demon
   int _tapsOnCake = 0;
+  String? _customPhotoPath;
 
   final List<Map<String, dynamic>> _themes = [
     {
@@ -196,6 +200,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) _updateCountdown();
     });
+
+    _loadCustomPhoto();
+  }
+
+  Future<void> _loadCustomPhoto() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() => _customPhotoPath = prefs.getString(kCustomPhotoPathKey));
+    }
   }
 
   void _updateCountdown() {
@@ -376,7 +389,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               width: 46,
               height: 46,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.3),
+                color: Colors.white.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Center(child: Text('🐾', style: TextStyle(fontSize: 22))),
@@ -390,21 +403,48 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               color: Colors.white,
             ),
           ),
-          // Gift button
-          GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const GalleryScreen()),
-            ),
-            child: Container(
-              width: 46,
-              height: 46,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(16),
+          Row(
+            children: [
+              // Gift button
+              GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const GalleryScreen()),
+                ),
+                child: Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Center(child: Text('🎁', style: TextStyle(fontSize: 22))),
+                ),
               ),
-              child: const Center(child: Text('🎁', style: TextStyle(fontSize: 22))),
-            ),
+              const SizedBox(width: 8),
+              // Settings button
+              GestureDetector(
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => SettingsScreen(theme: _themes[_activeTheme]),
+                    ),
+                  );
+                  // Refresh the home screen's photo in case it changed
+                  await _loadCustomPhoto();
+                },
+                child: Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Center(child: Text('⚙️', style: TextStyle(fontSize: 20))),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -424,30 +464,40 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         border: Border.all(color: Colors.white, width: 4),
         boxShadow: [
           BoxShadow(
-            color: (theme['accent'] as Color).withValues(alpha: 0.6),
+            color: (theme['accent'] as Color).withOpacity(0.6),
             blurRadius: 20,
             spreadRadius: 2,
           ),
         ],
       ),
       child: ClipOval(
-        child: Image.asset(
-          'assets/images/azaio.jpg',
-          fit: BoxFit.cover,
-          // Falls back to a friendly placeholder if the photo hasn't been
-          // added yet, so the app never crashes — just shows this instead.
-          errorBuilder: (context, error, stackTrace) => Container(
-            color: Colors.white.withValues(alpha: 0.25),
-            child: const Center(
-              child: Text('📸', style: TextStyle(fontSize: 40)),
-            ),
-          ),
-        ),
+        child: _customPhotoPath != null
+            ? Image.file(
+                File(_customPhotoPath!),
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => _photoFallback(),
+              )
+            : Image.asset(
+                'assets/images/azaio.jpg',
+                fit: BoxFit.cover,
+                // Falls back to a friendly placeholder if the photo hasn't been
+                // added yet, so the app never crashes — just shows this instead.
+                errorBuilder: (context, error, stackTrace) => _photoFallback(),
+              ),
       ),
     ).animate().scale(
       begin: const Offset(0.5, 0.5),
       duration: 600.ms,
       curve: Curves.elasticOut,
+    );
+  }
+
+  Widget _photoFallback() {
+    return Container(
+      color: Colors.white.withOpacity(0.25),
+      child: const Center(
+        child: Text('📸', style: TextStyle(fontSize: 40)),
+      ),
     );
   }
 
@@ -479,7 +529,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w700,
-            color: Colors.white.withValues(alpha: 0.9),
+            color: Colors.white.withOpacity(0.9),
           ),
         ),
       ],
@@ -501,12 +551,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               width: 200,
               height: 200,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.25),
+                color: Colors.white.withOpacity(0.25),
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 3),
                 boxShadow: [
                   BoxShadow(
-                    color: (theme['accent'] as Color).withValues(alpha: 0.5),
+                    color: (theme['accent'] as Color).withOpacity(0.5),
                     blurRadius: 30,
                     spreadRadius: 5,
                   ),
@@ -529,7 +579,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                   const Text('🎂', style: TextStyle(fontSize: 40)),
                   Text(
-                    'Tap me! ($_tapsOnCake)',
+                    'Tap me! (${_tapsOnCake})',
                     style: const TextStyle(
                       fontSize: 13,
                       color: Colors.white,
@@ -552,7 +602,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       return Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.25),
+          color: Colors.white.withOpacity(0.25),
           borderRadius: BorderRadius.circular(24),
         ),
         child: const Text(
@@ -575,9 +625,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.2),
+        color: Colors.white.withOpacity(0.2),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.4), width: 2),
+        border: Border.all(color: Colors.white.withOpacity(0.4), width: 2),
       ),
       child: Column(
         children: [
@@ -611,7 +661,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           width: 62,
           height: 62,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.3),
+            color: Colors.white.withOpacity(0.3),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -672,8 +722,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(
                     color: isActive
-                        ? Colors.white.withValues(alpha: 0.4)
-                        : Colors.white.withValues(alpha: 0.15),
+                        ? Colors.white.withOpacity(0.4)
+                        : Colors.white.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: isActive ? Colors.white : Colors.transparent,
@@ -690,7 +740,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w800,
-                          color: Colors.white.withValues(alpha: isActive ? 1 : 0.7),
+                          color: Colors.white.withOpacity(isActive ? 1 : 0.7),
                         ),
                       ),
                     ],
@@ -770,10 +820,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.3),
+                    color: Colors.white.withOpacity(0.3),
                     width: 1.5,
                   ),
                 ),
@@ -816,8 +866,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Colors.white.withValues(alpha: 0.35),
-              Colors.white.withValues(alpha: 0.15),
+              Colors.white.withOpacity(0.35),
+              Colors.white.withOpacity(0.15),
             ],
           ),
           borderRadius: BorderRadius.circular(24),
@@ -936,7 +986,7 @@ class _ActivityScreenState extends State<ActivityScreen>
               width: 180,
               height: 180,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
+                color: Colors.white.withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -1060,7 +1110,7 @@ class _ActivityScreenState extends State<ActivityScreen>
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
+            color: Colors.white.withOpacity(0.2),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
@@ -1107,10 +1157,10 @@ class _ActivityScreenState extends State<ActivityScreen>
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               decoration: BoxDecoration(
                 color: isCorrect
-                    ? Colors.green.withValues(alpha: 0.8)
+                    ? Colors.green.withOpacity(0.8)
                     : isWrong
-                        ? Colors.red.withValues(alpha: 0.8)
-                        : Colors.white.withValues(alpha: isSelected ? 0.5 : 0.25),
+                        ? Colors.red.withOpacity(0.8)
+                        : Colors.white.withOpacity(isSelected ? 0.5 : 0.25),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isCorrect || isWrong ? Colors.white : Colors.white30,
@@ -1165,7 +1215,7 @@ class _ActivityScreenState extends State<ActivityScreen>
                             width: 44,
                             height: 44,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.3),
+                              color: Colors.white.withOpacity(0.3),
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: const Center(child: Text('←', style: TextStyle(fontSize: 22, color: Colors.white))),
@@ -1262,7 +1312,7 @@ class _DrawScreenState extends State<DrawScreen> {
               )),
               onPanEnd: (_) => setState(() => _points.add(DrawPoint.separator())),
               child: Container(
-                color: Colors.white.withValues(alpha: 0.9),
+                color: Colors.white.withOpacity(0.9),
                 child: CustomPaint(
                   painter: DrawPainter(_points),
                   size: Size.infinite,
@@ -1325,7 +1375,7 @@ class _DrawScreenState extends State<DrawScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: active ? Colors.white.withValues(alpha: 0.4) : Colors.white.withValues(alpha: 0.15),
+        color: active ? Colors.white.withOpacity(0.4) : Colors.white.withOpacity(0.15),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: active ? Colors.white : Colors.transparent,
@@ -1414,7 +1464,7 @@ class FunActivitiesScreen extends StatelessWidget {
                       child: Container(
                         width: 44, height: 44,
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.3),
+                          color: Colors.white.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: const Center(child: Text('←', style: TextStyle(fontSize: 22, color: Colors.white))),
@@ -1434,9 +1484,9 @@ class FunActivitiesScreen extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 14),
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
+                      color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.4), width: 1.5),
+                      border: Border.all(color: Colors.white.withOpacity(0.4), width: 1.5),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1449,7 +1499,7 @@ class FunActivitiesScreen extends StatelessWidget {
                             children: [
                               Text(items[i]['title']!, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white)),
                               const SizedBox(height: 4),
-                              Text(items[i]['fact']!, style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.9))),
+                              Text(items[i]['fact']!, style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.9))),
                             ],
                           ),
                         ),
@@ -1563,7 +1613,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                           child: Container(
                             width: 44, height: 44,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.3),
+                              color: Colors.white.withOpacity(0.3),
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: const Center(child: Text('←', style: TextStyle(fontSize: 22, color: Colors.white))),
@@ -1601,10 +1651,10 @@ class _GalleryScreenState extends State<GalleryScreen> {
                             margin: const EdgeInsets.only(bottom: 14),
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
-                              color: (msg['color'] as Color).withValues(alpha: 0.5),
+                              color: (msg['color'] as Color).withOpacity(0.5),
                               borderRadius: BorderRadius.circular(24),
                               border: Border.all(
-                                color: isOpen ? Colors.white : Colors.white.withValues(alpha: 0.3),
+                                color: isOpen ? Colors.white : Colors.white.withOpacity(0.3),
                                 width: isOpen ? 3 : 1.5,
                               ),
                             ),
@@ -1646,9 +1696,9 @@ class _GalleryScreenState extends State<GalleryScreen> {
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                                       decoration: BoxDecoration(
-                                        color: Colors.white.withValues(alpha: 0.25),
+                                        color: Colors.white.withOpacity(0.25),
                                         borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
+                                        border: Border.all(color: Colors.white.withOpacity(0.5)),
                                       ),
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
